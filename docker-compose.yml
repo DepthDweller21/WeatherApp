@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: your_database
+      POSTGRES_DB: weatherApp
     ports:
       - "5432:5432"
     networks:
@@ -22,8 +22,8 @@ services:
 
   nextjs:
     build:
-      context: ./nextjs
-    container_name: nextjs
+      context: ./app
+    container_name: app
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:5000
     ports:
@@ -34,7 +34,7 @@ services:
     networks:
       - app-network
     volumes:
-      - ./nextjs:/app
+      - ./app:/app
 
 networks:
   app-network:
