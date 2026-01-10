@@ -1,0 +1,23 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "name": "John Doe",
+            "email": "john@example.com",
+            "city": "London"
+        },
+        {
+            "id": 2,
+            "name": "Jhon Smith",
+            "email": "jane@example.com",
+            "city": "New York"
+        },
+        {
+            "id": 3,
+            "name": "Bob Johnson",
+            "email": "bob@example.com",
+            "city": "Tokyo"
+        }
+    ],
+    "lastUpdated": "2024-01-10T12:00:00Z"
+}
