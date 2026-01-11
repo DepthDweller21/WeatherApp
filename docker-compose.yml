@@ -1,45 +1,76 @@
 services:
-  
-  postgres:
-    image: postgres:16
-    container_name: postgres
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: weatherApp
-    ports:
-      - "5432:5432"
-    networks:
-      - app-network
-  
-  redis:
-    image: redis:latest
-    container_name: redis
-    ports:
-      - "6379:6379"
-    networks:
-      - app-network
+    postgres:
+        image: postgres:16
+        container_name: postgres
+        environment:
+            POSTGRES_USER: user
+            POSTGRES_PASSWORD: password
+            POSTGRES_DB: weatherApp
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+        networks:
+            - app-network
 
-  nextjs:
-    build:
-      context: ./app
-    container_name: app
-    environment:
-      NEXT_PUBLIC_API_URL: http://localhost:5000
-    ports:
-      - "3000:3000"
-    depends_on:
-      - postgres
-      - redis
-    networks:
-      - app-network
-    volumes:
-      - ./app:/app
+    redis:
+        image: redis:latest
+        container_name: redis
+        # Port mapping removed - containers access Redis via Docker network
+        # If you need host access, uncomment and use a different port:
+        ports:
+            - "6380:6379"
+        networks:
+            - app-network
+
+    app:
+        build:
+            context: ./app
+        container_name: app
+        environment:
+            DATABASE_URL: "postgresql://user:password@postgres:5432/weatherApp?schema=public"
+            REDIS_URL: "redis://redis:6379"
+        ports:
+            - "3000:3000"
+        depends_on:
+            - postgres
+            - redis
+        networks:
+            - app-network
+        volumes:
+            - ./app:/app
+        command: sh -c "sleep 5 && bun dev -- --webpack"
+
+    worker:
+        build:
+            context: ./worker
+        container_name: worker
+        environment:
+            DATABASE_URL: "postgresql://user:password@postgres:5432/weatherApp?schema=public"
+            REDIS_URL: "redis://redis:6379"
+        depends_on:
+            - postgres
+            - redis
+            - app
+        networks:
+            - app-network
+
+    producer:
+        build:
+            context: ./producer
+        container_name: producer
+        environment:
+            REDIS_URL: "redis://redis:6379"
+            INTERVAL_SECONDS: "60"
+        depends_on:
+            - redis
+        networks:
+            - app-network
 
 networks:
-  app-network:
-    driver: bridge
+    app-network:
+        driver: bridge
 
 volumes:
-  postgres-data:
-    driver: local
+    postgres-data:
+        driver: local

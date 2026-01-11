@@ -166,3 +166,19 @@ docker compose up --build
 3. The `/weather` page retrieves the data via `GET /api/weather` and displays the table with temperature, wind speed, and last updated time.
 
 4. The producer automatically adds a new job every 60 seconds to keep data refreshed.
+
+## Deliverables
+
+A GitHub repository containing:
+
+1. /app → Next.js frontend + API
+2. /worker → TypeScript consumer service
+3. /producer → TypeScript scheduler service
+4. /docker-compose.yml → Container orchestration
+5. /README.md → Setup and usage instructions
+
+Running the system locally must require only:
+
+```bash
+docker compose up --build
+```

@@ -1,0 +1,16 @@
+{
+    "name": "weather-producer",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "start": "bun src/index.ts",
+        "dev": "bun --watch src/index.ts"
+    },
+    "dependencies": {
+        "ioredis": "^5.3.2"
+    },
+    "devDependencies": {
+        "@types/node": "^20",
+        "typescript": "^5"
+    }
+}
